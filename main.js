@@ -11,6 +11,10 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+console.log("main.js");
+
+
+
 
 import {KNNImageClassifier} from 'deeplearn-knn-image-classifier';
 import * as dl from 'deeplearn';
@@ -106,6 +110,8 @@ class Main {
       
       // If any examples have been added, run predict
       const exampleCount = this.knn.getClassExampleCount();
+      const debugmessage = document.getElementById('debugmessage');
+      debugmessage.innerText = "--";
       if(Math.max(...exampleCount) > 0){
         this.knn.predictClass(image)
         .then((res)=>{
@@ -121,6 +127,16 @@ class Main {
             if(exampleCount[i] > 0){
               this.infoTexts[i].innerText = ` ${exampleCount[i]} examples - ${res.confidences[i]*100}%`
             }
+
+            if(i == 0 && res.confidences[0] > .9){
+              debugmessage.innerText = 'stop';
+            }
+
+            if(i == 1 && res.confidences[1] > .9){
+              debugmessage.innerText = 'flip';
+              socket.emit('/message', 'flip');
+            }
+
           }
         })
         // Dispose image when done
