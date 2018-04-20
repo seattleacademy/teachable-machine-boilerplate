@@ -20,7 +20,7 @@ import { KNNImageClassifier } from 'deeplearn-knn-image-classifier';
 import * as dl from 'deeplearn';
 
 // Number of classes to classify
-const NUM_CLASSES = 4;
+const NUM_CLASSES = 10;
 // Webcam Image size. Must be 227. 
 const IMAGE_SIZE = 227;
 // K value for KNN
@@ -53,7 +53,17 @@ class Main {
 
             // Create training button
             const button = document.createElement('button')
-            button.innerText = "Train " + i;
+            // button.innerText = "Train " + i;
+            if (i == 0) button.innerText = 'nothing';
+            if (i == 1) button.innerText = 'stop';
+            if (i == 2) button.innerText = 'land';
+            if (i == 3) button.innerText = 'up';
+            if (i == 4) button.innerText = 'down';
+            if (i == 5) button.innerText = 'clockwise';
+            if (i == 6) button.innerText = 'counterClockwise';
+            if (i == 7) button.innerText = 'red';
+            if (i == 8) button.innerText = 'green';
+            if (i == 9) button.innerText = 'flipRight';
             div.appendChild(button);
 
             // Listen for mouse events when clicking the button
@@ -128,26 +138,50 @@ class Main {
                                 this.infoTexts[i].innerText = ` ${exampleCount[i]} examples - ${res.confidences[i]*100}%`
                             }
 
-                            if (i == 0 && res.confidences[0] >= .9) {
-                                debugmessage.innerText = 'stop';
-                               // socket.emit("/dance/dance1", "stop");
+                            if (i == 0 && res.confidences[0] >= .5) {
+                                debugmessage.innerText = 'nothing';
                             }
 
                             if (i == 1 && res.confidences[1] >= .9) {
-                                debugmessage.innerText = 'flip';
-                                socket.emit("/dance/dance1", "flip");
-                                //socket.emit('/message', 'flip');
+                                debugmessage.innerText = 'stop';
+                                socket.emit("/pilot/drone", { action: 'stop' });
                             }
 
-                            if (i == 2 && res.confidences[2] >= 1) {
+                            if (i == 2 && res.confidences[2] >= .9) {
                                 debugmessage.innerText = 'land';
-                                socket.emit("/pilot/drone", { action : 'land'});
+                                socket.emit("/pilot/drone", { action: 'land' });
                             }
 
+                            if (i == 3 && res.confidences[3] >= .9) {
+                                debugmessage.innerText = 'up';
+                                socket.emit("/pilot/move", { action: 'up' });
+                            }
 
-                            if (i == 3 && res.confidences[3] >= 1) {
-                                debugmessage.innerText = 'sissors';
-                                socket.emit('/move', 'land');
+                            if (i == 4 && res.confidences[4] >= .9) {
+                                debugmessage.innerText = 'down';
+                                socket.emit("/pilot/move", { action: 'down' });
+                            }
+
+                            if (i == 5 && res.confidences[5] >= .9) {
+                                debugmessage.innerText = 'clockwise';
+                                socket.emit("/pilot/move", { action: 'clockwise' });
+                            }
+
+                            if (i == 6 && res.confidences[6] >= .9) {
+                                debugmessage.innerText = 'counterClockwise';
+                                socket.emit("/pilot/move", { action: 'counterClockwise' });
+                            }
+                            if (i == 7 && res.confidences[7] >= .9) {
+                                debugmessage.innerText = 'red';
+                                socket.emit("/pilot/animateLeds", { animation: 'red' });
+                            }
+                            if (i == 8 && res.confidences[8] >= .9) {
+                                debugmessage.innerText = 'green';
+                                socket.emit("/pilot/animateLeds", { animation: 'green' });
+                            }
+                            if (i == 9 && res.confidences[9] >= .9) {
+                                debugmessage.innerText = 'flip';
+                                socket.emit("/pilot/animate", { action: 'flipRight' });
                             }
 
 
